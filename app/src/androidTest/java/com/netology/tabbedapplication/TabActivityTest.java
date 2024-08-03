@@ -3,10 +3,12 @@ package com.netology.tabbedapplication;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -28,7 +30,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest {
+public class TabActivityTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
@@ -38,17 +40,21 @@ public class MainActivityTest {
     String expectedText = "Page: 2";
 
     @Test
-    public void mainActivityTest() {
-        ViewInteraction tabView = onView(allOf(withContentDescription(buttonTab),
+    public void tabActivityTest() {
+        ViewInteraction tabView2 = onView(
+                allOf(withContentDescription(buttonTab),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.tabs),
                                         0),
-                                1),
-                        isDisplayed()));
-        tabView.perform(click());
+                                1)));
+        tabView2.check(matches(isDisplayed()));
+        tabView2.perform(click());
 
-        ViewInteraction textView = onView(withId(R.id.section_label));
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.section_label), withText(expectedText),
+                        withParent(allOf(withId(R.id.constraintLayout),
+                                withParent(withId(R.id.view_pager))))));
         textView.check(matches(isDisplayed()));
         textView.check(matches(withText(expectedText)));
     }
